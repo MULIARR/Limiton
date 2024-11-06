@@ -14,7 +14,7 @@ starting_router = Router()
 
 
 @starting_router.message(CommandStart(), IsPrivateChatFilter())
-async def show_menu(message: Message, bot: Bot, state: FSMContext, db: Database):
+async def _(message: Message, bot: Bot, state: FSMContext, db: Database):
     user_id = message.from_user.id
 
     await state.clear()
@@ -49,7 +49,7 @@ async def show_menu(message: Message, bot: Bot, state: FSMContext, db: Database)
 
 
 @starting_router.callback_query(F.data == "back_to_menu")
-async def my_orders(query: CallbackQuery, bot: Bot, state: FSMContext):
+async def _(query: CallbackQuery, bot: Bot, state: FSMContext):
     if state:
         await state.clear()
 

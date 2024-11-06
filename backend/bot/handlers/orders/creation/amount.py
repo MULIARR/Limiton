@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from backend.bot.handlers.orders.creation.menu import open_order_creation
-from backend.bot.handlers.orders.creation.order_vault import order_vault
+from backend.bot.storages import storages as st
 from backend.bot.keyboards import keyboards
 from backend.bot.states.order import EnterAmount
 from backend.bot.texts import texts
@@ -13,7 +13,7 @@ amount_router = Router()
 
 
 @amount_router.message(EnterAmount.enter, F.text)
-async def make_invoice(
+async def _(
         message: Message,
         state: FSMContext,
         bot: Bot
@@ -23,9 +23,9 @@ async def make_invoice(
     user_id = message.from_user.id
     amount = message.text
 
-    order = await order_vault.load_order(state)
+    order = await st.limit_order.get(state)
 
-    if validate_amount(amount):
+    if amount := validate_amount(amount):
         amount = float(amount)
 
         # if amount is correct
@@ -47,9 +47,9 @@ async def make_invoice(
                     )
                     kwargs["receive_token"] = {"amount": round(estimated_swap_amount, 2)}
 
-            await order_vault.update_order(state, **kwargs)
+            await st.limit_order.update(state, **kwargs)
         else:
-            await order_vault.update_order(state, receive_token={"amount": amount})
+            await st.limit_order.update(state, receive_token={"amount": amount})
 
         # get out of the state
         await state.set_state(state=None)
@@ -64,7 +64,7 @@ async def make_invoice(
         )
 
 
-def validate_amount(amount) -> bool:
+def validate_amount(amount) -> float:
     try:
         amount = float(amount)
     except ValueError:
@@ -73,4 +73,4 @@ def validate_amount(amount) -> bool:
     if amount < 0.000000001:
         return False
 
-    return True
+    return amount

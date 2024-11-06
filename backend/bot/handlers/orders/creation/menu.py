@@ -2,7 +2,7 @@ from aiogram import Router, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
-from backend.bot.handlers.orders.creation.order_vault import order_vault
+from backend.bot.storages import storages as st
 from backend.bot.keyboards import keyboards, factories
 from backend.bot.states.order import PasteCAState, EnterAmount
 from backend.bot.texts import texts
@@ -13,7 +13,7 @@ menu_router = Router()
 
 
 @menu_router.callback_query(factories.order.creation.filter())
-async def show_menu(
+async def _(
         query: CallbackQuery,
         bot: Bot,
         state: FSMContext,
@@ -26,8 +26,8 @@ async def show_menu(
     # get out of the state
     await state.set_state(state=None)
 
-    # get order model
-    order = await order_vault.load_order(state)
+    # get order storage model
+    order = await st.limit_order.get(state)
 
     if callback_data.action in ("new_order", "back_to_order"):
         await open_order_creation(bot, user_id, message_id, state)
@@ -55,9 +55,7 @@ async def show_menu(
 
         setting_up_send_token = True if callback_data.action == "amount_send_token" else False
 
-        await order_vault.update_order(
-            state, setting_up_send_token=setting_up_send_token, message_id=message_id
-        )
+        await st.limit_order.update(state, setting_up_send_token=setting_up_send_token, message_id=message_id)
 
     elif callback_data.action in ("select_send_token", "select_receive_token"):
         await bot.edit_message_text(
@@ -72,9 +70,7 @@ async def show_menu(
 
         setting_up_send_token = True if callback_data.action == "select_send_token" else False
 
-        await order_vault.update_order(
-            state, setting_up_send_token=setting_up_send_token, message_id=message_id
-        )
+        await st.limit_order.update(state, setting_up_send_token=setting_up_send_token, message_id=message_id)
 
     elif callback_data.action == "slippage":
         await bot.edit_message_text(
@@ -84,8 +80,11 @@ async def show_menu(
             reply_markup=keyboards.orders.create_slippage_markup()
         )
 
+    elif callback_data.action == "warning":
+        await bot.answer_callback_query(query.id, text=order.warning)
+
     elif callback_data.action == "swap":
-        await order_vault.update_order(state, send_token=order.receive_token, receive_token=order.send_token)
+        await st.limit_order.update(state, send_token=order.receive_token, receive_token=order.send_token)
 
         await open_order_creation(bot, user_id, message_id, state)
 
@@ -117,7 +116,7 @@ async def show_menu(
             reply_markup=keyboards.orders.create_order_confirmation_markup()
         )
 
-        await order_vault.update_order(state, minimum_to_receive=minimum_to_receive_amount)
+        await st.limit_order.update(state, minimum_to_receive=minimum_to_receive_amount)
 
     elif callback_data.action == "create":
 
@@ -147,21 +146,23 @@ async def show_menu(
 
         await state.clear()
 
+    await query.answer()
+
 
 @menu_router.callback_query(factories.order.slippage.filter())
-async def show_menu(
+async def _(
         query: CallbackQuery,
         bot: Bot,
         state: FSMContext,
         callback_data: factories.order.slippage,
 ):
-    await order_vault.update_order(state, slippage=callback_data.slippage)
+    await st.limit_order.update(state, slippage=callback_data.slippage)
 
     await open_order_creation(bot, query.from_user.id, query.message.message_id, state)
 
 
 async def open_order_creation(bot: Bot, user_id: int, message_id: int, state: FSMContext):
-    order = await order_vault.load_order(state)
+    order = await st.limit_order.get(state)
 
     await bot.edit_message_text(
         chat_id=user_id,

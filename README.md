@@ -1,4 +1,4 @@
-# Limiton
+#
 Development of a Course Work of the subject of Web technologies and web design.
 
 ![IMG_1099](https://github.com/user-attachments/assets/c690a406-f9ff-4aea-94d4-aeb6c9e70628)

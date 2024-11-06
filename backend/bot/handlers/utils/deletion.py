@@ -5,7 +5,7 @@ deletion_router = Router()
 
 
 @deletion_router.callback_query(F.data == 'delete_message')
-async def delete_message(query: CallbackQuery, bot: Bot):
+async def _(query: CallbackQuery, bot: Bot):
     await bot.delete_message(
         chat_id=query.message.chat.id,
         message_id=query.message.message_id

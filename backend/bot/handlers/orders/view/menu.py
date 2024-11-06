@@ -10,7 +10,7 @@ menu_router = Router()
 
 
 @menu_router.callback_query(F.data == "user_orders")
-async def show_menu(
+async def _(
         query: CallbackQuery,
         bot: Bot,
         state: FSMContext,

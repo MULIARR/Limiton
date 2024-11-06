@@ -9,7 +9,7 @@ specific_router = Router()
 
 
 @specific_router.callback_query(factories.order.view.filter())
-async def show_menu(
+async def _(
         query: CallbackQuery,
         bot: Bot,
         callback_data: factories.order.view,
@@ -17,8 +17,6 @@ async def show_menu(
 ):
     user_id = query.from_user.id
     order_id = callback_data.order_id
-
-    # order = await db.limit_orders.get_order(order_id)
 
     await bot.edit_message_text(
         chat_id=user_id,

@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from backend.bot.handlers.orders.creation.menu import open_order_creation
-from backend.bot.handlers.orders.creation.order_vault import order_vault
+from backend.bot.storages import storages as st
 from backend.bot.keyboards import keyboards
 from backend.bot.states.order import PasteCAState
 from backend.bot.texts import texts
@@ -23,7 +23,7 @@ async def _(
     user_id = message.from_user.id
     ca = message.text
 
-    order = await order_vault.load_order(state)
+    order = await st.limit_order.get(state)
     jetton = await ton.jettons.get_jetton(ca)
 
     if jetton:
@@ -62,7 +62,7 @@ async def _(
                         kwargs["receive_token"] = {"amount": 0}
                         kwargs["warning"] = None if is_pool_exist else "Liquidity pool not found"
 
-            await order_vault.update_order(state, **kwargs)
+            await st.limit_order.update(state, **kwargs)
         else:
             kwargs = {
                 "receive_token": token_data
@@ -92,7 +92,7 @@ async def _(
                     token_data["amount"] = 0
                     kwargs["warning"] = "Liquidity pool not found"
 
-            await order_vault.update_order(state, **kwargs)
+            await st.limit_order.update(state, **kwargs)
 
         await open_order_creation(bot, user_id, order.message_id, state)
 

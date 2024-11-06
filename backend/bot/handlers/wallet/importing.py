@@ -3,15 +3,13 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
 from backend.bot.keyboards import keyboards
-from backend.bot.texts import texts
-from backend.classes import ton
 from backend.database.db import Database
 
 importing_router = Router()
 
 
 @importing_router.callback_query(F.data == "import_wallet")
-async def show_menu(
+async def _(
         query: CallbackQuery,
         bot: Bot,
         state: FSMContext,

@@ -11,7 +11,7 @@ cancellation_router = Router()
 
 
 @cancellation_router.callback_query(factories.order.cancellation.filter())
-async def show_menu(
+async def _(
         query: CallbackQuery,
         bot: Bot,
         callback_data: factories.order.cancellation,

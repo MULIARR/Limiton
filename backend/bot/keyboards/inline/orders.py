@@ -52,14 +52,14 @@ class OrdersKeyboards:
             markup.row(
                 InlineKeyboardButton(
                     text=f"· {order.warning} ·",
-                    callback_data='energy_rent_description'
+                    callback_data=factories.order.creation(action="warning").pack()
                 )
             )
         else:
             markup.row(
                 InlineKeyboardButton(
                     text="🚀 Confirm Order ›",
-                    callback_data=factories.order.creation_factory(action="confirm").pack()
+                    callback_data=factories.order.creation(action="confirm").pack()
                 )
             )
 
