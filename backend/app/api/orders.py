@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 
-from backend.classes import ton
+from backend.clients import ton
 from backend.database.db import db
 from backend.models.order import LimitOrderModel
 

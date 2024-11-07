@@ -7,7 +7,7 @@ from backend.bot.keyboards import keyboards
 from backend.bot.texts import texts
 
 from backend.bot.filters.private_chat import IsPrivateChatFilter
-from backend.classes import ton
+from backend.clients import ton
 from backend.database.db import Database
 
 starting_router = Router()

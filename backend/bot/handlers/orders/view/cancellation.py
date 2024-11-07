@@ -3,7 +3,7 @@ from aiogram.types import CallbackQuery
 
 from backend.bot.handlers.orders.view.menu import open_user_orders_menu
 from backend.bot.keyboards import factories
-from backend.classes import ton
+from backend.clients import ton
 from backend.database.db import Database
 from backend.database.enums import OrderStatus
 

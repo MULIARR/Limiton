@@ -1,6 +1,6 @@
 from sqlalchemy import select
 
-from backend.classes.ton.encryption_controller import encryption_manager
+from backend.clients.ton.encryption_controller import encryption_manager
 from backend.database.schema.ton_wallet import TonWallet
 
 

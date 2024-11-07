@@ -6,7 +6,7 @@ from backend.bot.storages import storages as st
 from backend.bot.keyboards import keyboards, factories
 from backend.bot.states.order import PasteCAState, EnterAmount
 from backend.bot.texts import texts
-from backend.classes import ton
+from backend.clients import ton
 from backend.database.db import Database
 
 menu_router = Router()

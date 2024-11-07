@@ -7,7 +7,7 @@ from backend.bot.storages import storages as st
 from backend.bot.keyboards import keyboards
 from backend.bot.states.order import EnterAmount
 from backend.bot.texts import texts
-from backend.classes import ton
+from backend.clients import ton
 
 amount_router = Router()
 

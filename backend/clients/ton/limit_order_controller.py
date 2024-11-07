@@ -3,7 +3,7 @@ import asyncio
 from aiogram import Bot
 from dedust import Asset
 
-from backend.classes.logger_config import app_logger
+from backend.clients.logger_config import app_logger
 from backend.constants import TONTokenAddresses
 from backend.database.db import db
 from backend.database.enums import OrderStatus

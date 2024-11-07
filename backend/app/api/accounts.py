@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from backend.classes import ton
+from backend.clients import ton
 
 accounts_router = APIRouter(
     prefix="/accounts"

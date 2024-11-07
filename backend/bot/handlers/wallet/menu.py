@@ -4,7 +4,7 @@ from aiogram.types import CallbackQuery
 
 from backend.bot.keyboards import keyboards
 from backend.bot.texts import texts
-from backend.classes import ton
+from backend.clients import ton
 from backend.database.db import Database
 from backend.utils.format_number import format_number
 

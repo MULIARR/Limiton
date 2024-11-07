@@ -1,14 +1,15 @@
-from backend.classes.ton.dedust_controller import DeDustController
-from backend.classes.ton.jetton_controller import JettonController
-from backend.classes.ton.limit_order_controller import LimitOrderController
-from backend.classes.ton.order_task_controller import OrderTaskController
-from backend.classes.ton.account_controller import AccountController
-from backend.classes.ton.tonapi_client import AsyncTONApiClient
+from backend.clients.ton.dedust_controller import DeDustController
+from backend.clients.ton.jetton_controller import JettonController
+from backend.clients.ton.limit_order_controller import LimitOrderController
+from backend.clients.ton.order_task_controller import OrderTaskController
+from backend.clients.ton.account_controller import AccountController
+from backend.clients.ton.tonapi_client import AsyncTONApiClient
 
 from aiogram import Bot
 
-from backend.classes.ton.wallet import WalletManager
+from backend.clients.ton.wallet import WalletManager
 from backend.config import config
+from backend.database.db import db
 
 
 class TONController:
@@ -48,6 +49,21 @@ class TONController:
         :return: None
         """
         await self.dedust.close()
+
+    async def setup_limit_orders(self) -> None:
+        orders = await db.limit_orders.get_active_orders()
+        limit_orders_models = await self.limit_orders.create_limit_order_models(orders)
+
+        # extract user ids from models
+        users_ids = [order_modal.user_id for order_modal in limit_orders_models]
+
+        # get users wallets models from db
+        users_wallets = await db.ton_wallets.get_selected_wallets(users_ids)
+
+        # save user wallets in local memory
+        self.limit_orders.init_user_wallets(users_wallets)
+
+        await self.limit_orders.launch_limit_orders(limit_orders_models)
 
     @property
     def order_tasks(self):

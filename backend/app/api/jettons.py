@@ -2,7 +2,7 @@ from typing import Union, Optional
 
 from fastapi import APIRouter, Query
 
-from backend.classes import ton
+from backend.clients import ton
 from backend.models.rates import SwapRates
 
 jettons_router = APIRouter(

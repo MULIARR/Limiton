@@ -2,7 +2,7 @@ from typing import Union
 
 from fastapi import APIRouter
 
-from backend.classes import ton
+from backend.clients import ton
 
 pools_router = APIRouter(
     prefix="/pools"
